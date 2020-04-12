@@ -1,16 +1,22 @@
 pipeline{
-     agent any
-
-     tools{
-       maven 'maven3'
-     }
-  
-     stages{
-       stage('Build'){
-           steps{
-           	sh "mvn clean package"
-           	sh "printenv" //将环境变量打印到console中
-           }
-       } 
-     }
+	agent any
+	
+	tools{
+	    maven 'maven3'
+	}
+	
+	stages{
+		stage('pmd'){
+			steps{
+				sh "mvn pmd:pmd"
+			}
+			
+			post{
+				always{
+					pmd(canRunOnFailed:true, pattern:'**/target/pmd.xml')		
+				}
+			}
+		
+		}
+	}
 }
